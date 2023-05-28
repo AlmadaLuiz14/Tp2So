@@ -2,13 +2,13 @@
 #define MATRIZ
 
 typedef struct matriz{
-    char *end;
-    char *rw;
+    unsigned end;
+    char rw;
     int tam;
 }Matriz;
 
-Matriz** criaM(char*);
-void modificaM(Matriz**, char*, int);
+Matriz** criaM(int);
+void modificaM(Matriz**, unsigned, char, int);
 void apagaM(Matriz**, int);
 
 #endif

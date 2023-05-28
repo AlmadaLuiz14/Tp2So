@@ -3,23 +3,18 @@
 #include<stdlib.h>
 #include<string.h>
 
-Matriz** criaM(char *str){
+Matriz** criaM(int tam){
     Matriz **M;
     
-    M = (Matriz**)malloc(sizeof(Matriz*));
-    M[0] = (Matriz*)malloc(sizeof(Matriz));
-    M[0]->end = strtok(str, " ");
-    M[0]->rw = strtok(NULL, " ");
+    M = (Matriz**)malloc(sizeof(Matriz*)*tam);
     
     return M;
 }
 
-void modificaM(Matriz **M, char *str, int q){
-    M = realloc(M, sizeof(Matriz*)*q);
-    M[q] = (Matriz*)malloc(sizeof(Matriz));
-    M[q]->end = strtok(str, " ");
-    M[q]->rw = strtok(NULL, " ");
-    
+void modificaM(Matriz **M, unsigned end, char rw, int x){
+    M[x] = (Matriz*)malloc(sizeof(Matriz));
+    M[x]->end = end;
+    M[x]->rw = rw;
 }
 
 void apagaM(Matriz **M, int tam){
