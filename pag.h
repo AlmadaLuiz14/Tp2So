@@ -2,8 +2,9 @@
 #define PAG
 
 typedef struct hash{ //tam = o numero de molduras de pags na mem fisica
-    int key;
+    int ind;
     int bitV;
+    int bitMod;
     int pid;
     int pgVirtual;
     int pgFisica;
@@ -12,9 +13,20 @@ typedef struct hash{ //tam = o numero de molduras de pags na mem fisica
     //struct hash *prim;
 }Hash;
 
+typedef struct mem{
+    int ind;
+    int dados;
+    int tam;
+}Mem;
+
 int determinaPag(int, unsigned);
 Hash** criaH(int);
-void preencheH(Hash**, int, int, int, int, int);
+int preencheH(Hash**, int, int/*, Mem**, int*/);
+int funcHash(int, int);
 void removeH(Hash**, int);
 
+Mem** criaMem(int);
+int escreveMem(Mem**, int);
+void apagaMem(Mem**);
+int procuraPgV(Hash**, int, int);
 #endif

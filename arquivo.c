@@ -45,6 +45,7 @@ Matriz** ler_arquivo(char *arq){
     M = criaM(tam);
     while(x != tam){
         fscanf(file, "%x %c", &end, &rw);
+        printf("end = %x; rw = %c\n", end, rw);
         modificaM(M, end, rw, x);
         
         x++;
