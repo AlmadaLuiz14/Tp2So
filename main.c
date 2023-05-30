@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include<stdlib.h>
-//#include "arquivo.h"
 #include"pag.h"
+#include"mem.h"
 
 int main(int argc, char *argv[]){
     //argv[] -> [1] = algoritmo; [2] = arquivo; [3] = tam da pagina(2 a 64)KB; [4] = tam total da mem fisica(128 a 16382)KB
-    int tamM, tamH, page, key, c, x;
+    int tamH, page, key, c, x, write = 0, read = 0;
     FILE *file;
     unsigned end;
     char rw;
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
     fscanf(file, "%x %c", &end, &rw);
     //printf("end = %x; rw = %c\n", end, rw);
     while(fscanf(file, "%x %c", &end, &rw) != EOF){
-        printf("end = %x; rw = %c\n", end, rw);
+        //printf("end = %x; rw = %c\n", end, rw);
 
         //printf("0\n");
         page = determinaPag(atoi(argv[3]), end);
@@ -37,17 +37,31 @@ int main(int argc, char *argv[]){
         c = preencheH(H, key, page);
         //printf("3\n");
 
-        if((c == 0) || (rw == 'W')){
+        if((c == 1) || (rw == 'W')){
             //printf("4\n");
             x = escreveMem(Mf);
             //printf("5\n");
             if(x != -1){
-                //fazer uma forma de colocar o valor de x na posição certa da hash
+                Hash *p1 = procuraPgV(H, key, page);
+                p1->pgFisica = x;
+            }else{
+                //aqui é onde ocorre a page fault
+            }
+
+            write++;
+        }else if(rw == 'L'){
+            Hash *p1 = procuraPgV(H, key, page);
+            if(p1->bitV == 0){
+                //tem q atualizar a memoria para deixar a info valida = colocar a info la de novo;
             }
         }
 
     }
 
+
+    /*for(int i = 0; i < atoi(argv[4]); i++){
+        printf("Mf[%d]->ocupado = %d\n", i, Mf[i]->ocupado);
+    }*/
 
 
     fclose(file);

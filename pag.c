@@ -49,7 +49,7 @@ int preencheH(Hash **H, int key, int pgV/*, Mem **Mf, int dados*/){
     }else{
         //printf("52\n");
         //printf("pag = %d\n", pgV);
-        if(procuraPgV(H, key, pgV) == -1){
+        if(procuraPgV(H, key, pgV) == NULL){
             //printf("53\n");
             aux = (Hash*)malloc(sizeof(Hash));
             aux->ind = key;
@@ -70,19 +70,19 @@ int preencheH(Hash **H, int key, int pgV/*, Mem **Mf, int dados*/){
     return 0;
 }
 
-int procuraPgV(Hash **H, int key, int pgV){
+Hash* procuraPgV(Hash **H, int key, int pgV){
     Hash *aux = H[key]->prox;
 
     do{
         //printf("pg = %d; pgV = %d\n", aux->pgVirtual, pgV);
         if(aux->pgVirtual == pgV){
-            return aux->pgVirtual;
+            return aux;
         }
         aux = aux->prox;
         //printf("aaaaaaaa\n");
     }while(aux != NULL);
 
-    return -1;
+    return NULL;
 }
 
 int funcHash(int tam, int pag){
@@ -108,38 +108,4 @@ void removeH(Hash **H, int tam){
     }
 
     free(H);
-}
-
-Mem** criaMem(int tam){
-    Mem **Mf = (Mem**)malloc(sizeof(Mem*)*tam);
-
-    for(int i  = 0; i < tam; i++){
-        Mf[i] = (Mem*)malloc(sizeof(Mem));
-        Mf[i]->ind = i;
-        Mf[i]->ocupado = 0;
-    }
-    Mf[0]->tam = tam;
-
-    return Mf;
-}
-
-int escreveMem(Mem **Mf){
-    int c = -1;
-    
-    for(int i = 0; i < Mf[0]->tam; i++){
-        if(Mf[i]->ocupado == 0){
-            Mf[i]->ocupado = 1;
-            c = i;
-            break;
-        }
-    }
-
-    return c; //c != -1 -> mem cheia; c != -1 -> conseguiu alocar e c é a pgF
-}
-
-void apagaMem(Mem **Mf){
-    for(int i = 0; i < Mf[0]->tam; i++){
-        free(Mf[i]);
-    }
-    free(Mf);
 }
