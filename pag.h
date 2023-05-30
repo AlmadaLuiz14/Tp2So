@@ -15,7 +15,7 @@ typedef struct hash{ //tam = o numero de molduras de pags na mem fisica
 
 typedef struct mem{
     int ind;
-    int dados;
+    int ocupado;
     int tam;
 }Mem;
 
@@ -26,7 +26,7 @@ int funcHash(int, int);
 void removeH(Hash**, int);
 
 Mem** criaMem(int);
-int escreveMem(Mem**, int);
+int escreveMem(Mem**);
 void apagaMem(Mem**);
 int procuraPgV(Hash**, int, int);
 #endif

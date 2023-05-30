@@ -74,11 +74,13 @@ int procuraPgV(Hash **H, int key, int pgV){
     Hash *aux = H[key]->prox;
 
     do{
+        //printf("pg = %d; pgV = %d\n", aux->pgVirtual, pgV);
         if(aux->pgVirtual == pgV){
             return aux->pgVirtual;
         }
         aux = aux->prox;
-    }while(aux->prox != NULL);
+        //printf("aaaaaaaa\n");
+    }while(aux != NULL);
 
     return -1;
 }
@@ -114,19 +116,19 @@ Mem** criaMem(int tam){
     for(int i  = 0; i < tam; i++){
         Mf[i] = (Mem*)malloc(sizeof(Mem));
         Mf[i]->ind = i;
-        Mf[i]->dados = -1;
+        Mf[i]->ocupado = 0;
     }
     Mf[0]->tam = tam;
 
     return Mf;
 }
 
-int escreveMem(Mem **Mf, int dados){
+int escreveMem(Mem **Mf){
     int c = -1;
     
     for(int i = 0; i < Mf[0]->tam; i++){
-        if(Mf[i]->dados == -1){
-            Mf[i]->dados = dados;
+        if(Mf[i]->ocupado == 0){
+            Mf[i]->ocupado = 1;
             c = i;
             break;
         }

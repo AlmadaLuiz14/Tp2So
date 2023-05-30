@@ -15,6 +15,8 @@ void modificaM(Matriz **M, unsigned end, char rw, int x){
     M[x] = (Matriz*)malloc(sizeof(Matriz));
     M[x]->end = end;
     M[x]->rw = rw;
+
+    //printf("endM = %x; rwM = %c\n", M[x]->end, M[x]->rw);
 }
 
 void apagaM(Matriz **M, int tam){

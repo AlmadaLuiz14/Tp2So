@@ -28,31 +28,41 @@ int calculaTam(FILE *file){
     return tam;
 }
 
-Matriz** ler_arquivo(char *arq){
+void ler_arquivo(char *arq){
     int x = 0, tam;
     unsigned end;
     char rw;
-    Matriz **M;
+    //Matriz **M;
     FILE *file;
     
     file = fopen(arq, "r");
-    
+
     if(file == NULL){
         printf("Arquivo nao pode ser aberto ou nao existe\n");
     }
 
-    tam = calculaTam(file);
+    /*fscanf(file, "%x %c", &end, &rw);
+    printf("end = %x; rw = %c\n", end, rw);
+    while(fscanf(file, "%x %c", &end, &rw)){
+        printf("end = %x; rw = %c", end, rw);
+        fazTudo(end, rw);
+    }*/
+
+    /*tam = calculaTam(file);
     M = criaM(tam);
-    while(x != tam){
-        fscanf(file, "%x %c", &end, &rw);
-        printf("end = %x; rw = %c\n", end, rw);
-        modificaM(M, end, rw, x);
-        
+    while(x != 10){
+        //modificaM(M, end, rw, x);
+        if(fscanf(file, "%x %c", &end, &rw) == EOF){
+            printf("erro\n");
+        }else{
+            printf("end = %x; rw = %c\n", end, rw);
+        }
         x++;
     }
     
     M[0]->tam = tam; //o primeiro elemento possui a info do tamanho da matriz
 
+    return M;*/
+
     fclose(file);
-    return M;
 }
