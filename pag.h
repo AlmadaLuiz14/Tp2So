@@ -7,15 +7,22 @@ typedef struct hash{ //tam = o numero de molduras de pags na mem fisica
     int bitMod;
     int pgVirtual;
     int pgFisica;
+    int endFisico;
+    
+    int tamMax;
+    int tamAtual;
+    int tamH;
+
     struct hash *prox;
     struct hash *ult;
 }Hash;
 
 int determinaPag(int, unsigned);
-Hash** criaH(int);
+Hash** criaH(int, int);
 int preencheH(Hash**, int, int/*, Mem**, int*/);
 int funcHash(int, int);
 Hash* procuraPgV(Hash**, int, int);
+int procuraVazia(Hash**);
 void removeH(Hash**, int);
 
 #endif

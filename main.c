@@ -1,22 +1,28 @@
 #include <stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #include"pag.h"
 #include"mem.h"
+#include"substituicao.h"
 
 /*argv[] -> [1] = algoritmo; [2] = arquivo; 
 [3] = tam da pagina(2 a 64)KB; [4] = tam total da mem fisica(128 a 16382)KB*/
+
 int main(int argc, char *argv[]){
-    int tamH, page, key, c, x, write = 0, read = 0;
+    int qPag, pgEl, pagH, c, x, write = 0, read = 0, access = 0;
     FILE *file;
     unsigned end;
     char rw;
     Mem **Mf;
     Hash **H;
+    Hash *p1;
+
+    printf("Executando o algoritmo...\n");
 
     /*Cria a Hash(tabela de paginas) e a Memoria fisica*/
-    tamH = atoi(argv[4])/atoi(argv[3]);
-    H = criaH(tamH);
-    Mf = criaMem(atoi(argv[4]));
+    qPag = atoi(argv[4])/atoi(argv[3]);
+    H = criaH(atoi(argv[4]), atoi(argv[3]));
+    Mf = criaMem(qPag, atoi(argv[3]));
 
     /*Abre o arquivo*/
     file = fopen(argv[2], "r");
@@ -29,57 +35,61 @@ int main(int argc, char *argv[]){
     
     /*Começa a leitura do arquivo*/
     fscanf(file, "%x %c", &end, &rw);
-    //printf("end = %x; rw = %c\n", end, rw);
     while(fscanf(file, "%x %c", &end, &rw) != EOF){
-        //printf("end = %x; rw = %c\n", end, rw);
-
-        page = determinaPag(atoi(argv[3]), end);
-        key = funcHash(tamH, page);
-        c = preencheH(H, key, page);
-
-        if((c == 1) || (rw == 'W')){
+        pgEl = determinaPag(atoi(argv[3]), end);
+        pagH = funcHash(qPag, pgEl);
+        c = preencheH(H, pagH, pgEl);
+        if((c != -1) || (rw == 'W')){
             /*A instrução é de escrita, ou o endereço n estava
             na tabela, consequentemente n estava na memoria*/
-            x = escreveMem(Mf);
+            if(c == -1){
+                c = pagH;
+            }
+            x = escreveMem(Mf, c);
+            
+            write++;
+            access++; 
             if(x != -1){
-                Hash *p1 = procuraPgV(H, key, page);
-                
-                if(p1 == NULL){
-                    printf("Deu ruim aqui\n");//tirar depois esse if
-                }
+                p1 = procuraPgV(H, c, pgEl);
 
                 p1->pgFisica = x;
             }else{
-                //aqui é onde ocorre a page fault
+                
+                if(strcmp(argv[1], "lru")){
+                    lru(Mf, c);
+                    read = read + 3;
+                    write++;
+                    access = access + 4;
+                } else if(strcmp(argv[1], "nru")){
+                    nru(Mf, c);
+                    read = read + 3;
+                    write++;
+                    access = access + 4;
+                } else if(strcmp(argv[1], "segunda_chance")){
+                    segChanc(Mf, c);
+                    read = read + 3;
+                    write++;
+                    access = access + 4;
+                }
+                
             }
-
-            if(rw == 'R'){
-                read++;
-            }
-            write++; //deveria estar como um else do if acima?
 
         }else if(rw == 'R'){
             /*Instrução é de leitura e o endereço ja estava na tabela*/
-            Hash *p1 = procuraPgV(H, key, page);
-            
-            if(p1 == NULL){
-                    printf("Deu ruim aqui\n");//tirar depois esse if
-            }
-            
-            if(p1->bitV == 0){
-                //tem q atualizar a memoria para deixar a info valida = colocar a info la de novo;
-            }
-
+            p1 = procuraPgV(H, pagH, pgEl);
             read++;
+            access++;
         }
 
+        if(strcmp(argv[1], "lru")){
+            modificaVetLru(Mf, p1->pgFisica);
+        } else if(strcmp(argv[1], "nru")){
+            modificaVetNru(Mf, rw, p1->pgFisica);
+        } else if(strcmp(argv[1], "segunda_chance")){
+            Mf[p1->pgFisica]->segC = 1;
+        }
+        
     }
-
-
-    /*for(int i = 0; i < atoi(argv[4]); i++){
-        printf("Mf[%d]->ocupado = %d\n", i, Mf[i]->ocupado);
-    }*/
-
 
     /*Saida do programa com todas as infos sobre a execução*/
     printf("Arquivo de entrada: %s\n", argv[2]);
@@ -88,11 +98,10 @@ int main(int argc, char *argv[]){
     printf("Tecnica de reposicao: %s\n", argv[1]);
     printf("Paginas lidas: %d\n", read);
     printf("Paginas escritas: %d\n", write);
-
-
+    printf("Quantidade de acessos a memoria: %d\n", access);
 
     fclose(file);
-    removeH(H, tamH);
+    removeH(H, qPag);
     apagaMem(Mf);
     return 0;
 }

@@ -3,13 +3,16 @@
 
 typedef struct mem{
     int ind;
-    int ocupado;
     int tam;
+    int pagH;
+
+    int vetLru[3];
+    int vetNru[2];
+    int segC;
 }Mem;
 
-
-Mem** criaMem(int);
-int escreveMem(Mem**);
+Mem** criaMem(int, int);
+int escreveMem(Mem**, int);
 void apagaMem(Mem**);
 
 #endif
